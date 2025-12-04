@@ -1,6 +1,6 @@
 """
 Backend API 테스트용 Streamlit 앱
-포트 8082에서 실행 중인 Backend API를 테스트합니다.
+포트 8000에서 실행 중인 Backend API를 테스트합니다.
 """
 import requests
 import streamlit as st
@@ -8,7 +8,7 @@ from PIL import Image
 import json
 
 # Backend API Base URL
-BASE_URL = "http://localhost:8001/api"
+BASE_URL = "http://localhost:8000/api"
 
 # 세션 상태 초기화
 if "user_id" not in st.session_state:
@@ -17,6 +17,12 @@ if "nickname" not in st.session_state:
     st.session_state.nickname = None
 if "show_delete_confirm" not in st.session_state:
     st.session_state.show_delete_confirm = False
+if "post_detail_like_count" not in st.session_state:
+    st.session_state.post_detail_like_count = None
+if "post_detail_id" not in st.session_state:
+    st.session_state.post_detail_id = None
+if "post_detail_data" not in st.session_state:
+    st.session_state.post_detail_data = None
 
 st.title("🚀 Backend API 테스트")
 st.markdown("---")
@@ -258,6 +264,9 @@ with tab2:
     with post_tab3:
         st.subheader("게시글 상세")
         post_id = st.number_input("게시글 ID", min_value=1, value=1, key="detail_post_id")
+        if st.session_state.post_detail_id and st.session_state.post_detail_id != post_id:
+            st.session_state.post_detail_like_count = None
+            st.session_state.post_detail_data = None
         
         headers = {}
         if st.session_state.user_id:
@@ -273,27 +282,61 @@ with tab2:
                 if response.status_code == 200:
                     data = response.json()
                     post_data = data.get("data", {})
-                    
+                    st.session_state.post_detail_id = post_id
+                    st.session_state.post_detail_like_count = post_data.get('like_count', 0)
+                    st.session_state.post_detail_data = post_data
                     st.success("✅ 게시글 조회 성공!")
-                    st.write(f"**제목:** {post_data.get('title')}")
-                    st.write(f"**작성자:** {post_data.get('nickname')}")
-                    st.write(f"**내용:** {post_data.get('content')}")
-                    st.write(f"👍 좋아요: {post_data.get('like_count')} | 👁️ 조회수: {post_data.get('view_count')}")
-                    
-                    if post_data.get('image_url'):
-                        st.image(post_data.get('image_url'), width=300)
-                    
-                    # 댓글 표시
-                    comments = post_data.get('comments', [])
-                    if comments:
-                        st.subheader("💬 댓글")
-                        for comment in comments:
-                            st.write(f"- **{comment.get('nickname')}:** {comment.get('content')}")
                 else:
                     st.error(f"에러: {response.status_code}")
                     st.json(response.json())
             except Exception as e:
                 st.error(f"요청 실패: {e}")
+
+        post_data = st.session_state.get("post_detail_data")
+        if post_data and st.session_state.post_detail_id == post_id:
+            st.markdown("---")
+            st.write(f"**제목:** {post_data.get('title')}")
+            st.write(f"**작성자:** {post_data.get('nickname')}")
+            st.write(f"**내용:** {post_data.get('content')}")
+            current_like_count = post_data.get('like_count', 0)
+            if st.session_state.post_detail_like_count is not None:
+                current_like_count = st.session_state.post_detail_like_count
+            st.write(f"👍 좋아요: {current_like_count} | 👁️ 조회수: {post_data.get('view_count')}")
+            
+            if post_data.get('image_url'):
+                st.image(post_data.get('image_url'), width=300)
+            
+            if st.session_state.user_id:
+                like_col1, like_col2 = st.columns([1, 3])
+                with like_col1:
+                    if st.button("👍 좋아요 토글", key="toggle_like_button"):
+                        try:
+                            headers = {"X-User-Id": str(st.session_state.user_id)}
+                            like_response = requests.post(
+                                f"{BASE_URL}/posts/{post_id}/like",
+                                headers=headers
+                            )
+                            if like_response.status_code == 200:
+                                like_data = like_response.json().get("data", {})
+                                like_count = like_data.get("like_count", current_like_count)
+                                liked = like_data.get("liked", False)
+                                st.session_state.post_detail_like_count = like_count
+                                # post_data는 dict이므로 바로 업데이트
+                                st.session_state.post_detail_data["like_count"] = like_count
+                                st.success(f"👍 좋아요 {'등록' if liked else '취소'} (총 {like_count}개)")
+                            else:
+                                st.error(f"좋아요 실패: {like_response.status_code}")
+                                st.json(like_response.json())
+                        except Exception as e:
+                            st.error(f"좋아요 요청 실패: {e}")
+            else:
+                st.info("👍 좋아요를 사용하려면 로그인하세요.")
+            
+            comments = post_data.get('comments', [])
+            if comments:
+                st.subheader("💬 댓글")
+                for comment in comments:
+                    st.write(f"- **{comment.get('nickname')}:** {comment.get('content')}")
 
 # ========== 탭 3: 댓글 ==========
 with tab3:
@@ -440,7 +483,7 @@ with tab5:
     
     if st.button("상태 확인", type="primary"):
         try:
-            response = requests.get(f"http://localhost:8001/")
+            response = requests.get("http://localhost:8000/")
             
             if response.status_code == 200:
                 st.success("✅ Backend API 서버 정상 작동 중")
@@ -448,7 +491,7 @@ with tab5:
             else:
                 st.error(f"❌ 서버 응답 오류: {response.status_code}")
         except requests.exceptions.ConnectionError:
-            st.error("❌ Backend API 서버에 연결할 수 없습니다.\n포트 8001에서 서버가 실행 중인지 확인하세요.")
+            st.error("❌ Backend API 서버에 연결할 수 없습니다.\n포트 8000에서 서버가 실행 중인지 확인하세요.")
         except Exception as e:
             st.error(f"❌ 오류: {e}")
     

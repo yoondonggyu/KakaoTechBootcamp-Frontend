@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아무 말 대잔치</title>
+  <meta name="description" content="아무 말 대잔치 - 자유롭게 이야기를 나누는 게시판">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header" id="main-header">
+    <button class="header-back" id="header-back-btn" onclick="goBack()" style="display: none;">
+      &lt;
+    </button>
+    <h1 class="header-title">아무 말 대잔치</h1>
+    <div class="header-profile" id="header-profile-btn" onclick="Auth.handleLogout()" style="display: none;">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+      </svg>
+    </div>
+  </header>
+
+  <!-- Title Bar -->
+  <div class="title-bar">
+    <h1>아무 말 대잔치</h1>
+  </div>
+
+  <!-- ========================================
+       Page: Login
+       ======================================== -->
+  <div class="page active" id="page-login">
+    <div class="auth-container">
+      <h2 class="auth-title">로그인</h2>
+
+      <form class="auth-form" id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">이메일</label>
+          <input type="email" class="form-input" id="login-email" placeholder="이메일을 입력하세요">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">비밀번호</label>
+          <input type="password" class="form-input" id="login-password" placeholder="비밀번호를 입력하세요">
+          <p class="form-helper" id="login-helper"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">로그인</button>
+      </form>
+
+      <p class="auth-link">
+        <a href="javascript:void(0)" onclick="navigateTo('signup')">회원가입</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================
+       Page: Signup
+       ======================================== -->
+  <div class="page" id="page-signup">
+    <div class="auth-container">
+      <h2 class="auth-title">회원가입</h2>
+
+      <form class="auth-form" id="signup-form">
+        <!-- 프로필 사진 -->
+        <div class="profile-upload">
+          <label class="profile-upload-label required">프로필 사진</label>
+          <p class="form-helper" id="signup-profile-helper"></p>
+          <label class="profile-upload-area" for="signup-profile-input">
+            <svg id="signup-profile-placeholder" viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            <img id="signup-profile-preview" style="display: none;" alt="프로필 미리보기">
+          </label>
+          <input type="file" class="profile-upload-input" id="signup-profile-input"
+            accept="image/jpeg,image/png,image/jpg">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="signup-email">이메일</label>
+          <input type="email" class="form-input" id="signup-email" placeholder="이메일을 입력하세요">
+          <p class="form-helper" id="signup-email-helper"></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="signup-password">비밀번호</label>
+          <input type="password" class="form-input" id="signup-password" placeholder="비밀번호를 입력하세요">
+          <p class="form-helper" id="signup-password-helper"></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="signup-password-check">비밀번호 확인</label>
+          <input type="password" class="form-input" id="signup-password-check" placeholder="비밀번호를 한번 더 입력하세요">
+          <p class="form-helper" id="signup-password-check-helper"></p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="signup-nickname">닉네임</label>
+          <input type="text" class="form-input" id="signup-nickname" placeholder="닉네임을 입력하세요">
+          <p class="form-helper" id="signup-nickname-helper"></p>
+        </div>
+
+        <button type="submit" class="btn btn-primary">회원가입</button>
+      </form>
+
+      <p class="auth-link">
+        <a href="javascript:void(0)" onclick="navigateTo('login')">로그인하러 가기</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================
+       Page: Posts List
+       ======================================== -->
+  <div class="page" id="page-posts">
+    <div class="container">
+      <div class="posts-welcome">
+        안녕하세요,<br>
+        <strong>아무 말 대잔치</strong> 게시판 입니다.
+      </div>
+
+      <div class="posts-header">
+        <div></div>
+        <button class="btn btn-create" onclick="showCreatePost()">게시글 작성</button>
+      </div>
+
+      <div id="posts-list">
+        <!-- 게시글 목록이 여기에 렌더링됩니다 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       Page: Post Detail
+       ======================================== -->
+  <div class="page" id="page-post-detail">
+    <div class="container">
+      <div class="post-detail" id="post-detail-content">
+        <!-- 게시글 상세 내용이 여기에 렌더링됩니다 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       Page: Create/Edit Post
+       ======================================== -->
+  <div class="page" id="page-create-post">
+    <div class="container">
+      <div class="card">
+        <h2 class="card-title" id="create-post-title">게시글 작성</h2>
+
+        <form id="post-form" onsubmit="event.preventDefault(); submitPost();">
+          <div class="form-group">
+            <label class="form-label required" for="post-title-input">제목</label>
+            <input type="text" class="form-input" id="post-title-input" placeholder="제목을 입력하세요 (최대 26자)" maxlength="26">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="post-content-input">내용</label>
+            <textarea class="form-input form-textarea" id="post-content-input" placeholder="내용을 입력하세요"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="post-image-input">이미지 (선택)</label>
+            <input type="file" class="form-input" id="post-image-input" accept="image/jpeg,image/png,image/jpg">
+            <img id="post-image-preview" style="display: none; max-width: 100%; margin-top: 12px; border-radius: 8px;"
+              alt="이미지 미리보기">
+            <div class="ai-result" id="image-classification-preview" style="display: none; margin-top: 12px;">
+              <span class="ai-label">🤖 AI 이미지 분류:</span>
+              <span class="ai-value">분석 중...</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">작성 완료</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       Modal
+       ======================================== -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h3 class="modal-title" id="modal-title">확인</h3>
+      <p class="modal-message" id="modal-message">정말 삭제하시겠습니까?</p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-cancel" id="modal-cancel">취소</button>
+        <button class="modal-btn modal-btn-confirm" id="modal-confirm">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/posts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
