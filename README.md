@@ -1,78 +1,118 @@
-# FASTAPI_Project_front
+# 🎉 아무 말 대잔치 - Frontend
 
-Backend API 테스트용 Streamlit 프론트엔드
+> 자유롭게 이야기를 나누는 커뮤니티 게시판의 프론트엔드
 
-## 실행 방법
+## 📋 프로젝트 소개
 
+**아무 말 대잔치**는 누구나 자유롭게 글을 작성하고 소통할 수 있는 커뮤니티 게시판입니다.  
+AI 기반 감정 분석과 이미지 분류 기능을 통해 더욱 풍부한 사용자 경험을 제공합니다.
+
+## 🔗 관련 저장소
+
+| 저장소 | 설명 | 링크 |
+|--------|------|------|
+| **Frontend** | Vanilla JS 기반 웹 UI | [현재 저장소](https://github.com/yoondonggyu/KakaoTechBootcamp-Frontend) |
+| **Backend** | FastAPI 기반 REST API | [KakaoTechBootcamp-Backend](https://github.com/yoondonggyu/KakaoTechBootcamp-Backend) |
+| **Model** | AI 모델 서빙 API | [KakaoTechBootcamp-Model](https://github.com/yoondonggyu/KakaoTechBootcamp-Model) |
+
+## ✨ 주요 기능
+
+### 🔐 사용자 인증
+- 회원가입 (프로필 이미지 업로드)
+- 로그인/로그아웃
+- 세션 기반 인증
+
+### 📝 게시판 기능
+- 게시글 CRUD (작성/조회/수정/삭제)
+- 이미지 업로드
+- 좋아요 기능
+- 댓글 기능
+- 조회수 카운트
+
+### 🤖 AI 기능
+- **Gemini 감정 분석**: 게시글 내용의 감정(긍정/부정/중립) 분석 (한글/영어 지원)
+- **이미지 분류**: 업로드된 이미지에서 강아지/고양이 자동 분류
+
+## 🛠 기술 스택
+
+| 분류 | 기술 |
+|------|------|
+| **Language** | HTML5, CSS3, JavaScript (ES6+) |
+| **Design** | Vanilla CSS, Google Fonts (Noto Sans KR) |
+| **Architecture** | Single Page Application (SPA) |
+| **HTTP Client** | Fetch API |
+
+## 📁 프로젝트 구조
+
+```
+FASTAPI_Project_front/
+├── index.html          # 메인 HTML (SPA)
+├── css/
+│   └── index.css       # 전체 스타일시트
+├── js/
+│   ├── api.js          # API 통신 모듈
+│   ├── auth.js         # 인증 관련 로직
+│   ├── posts.js        # 게시글 관련 로직
+│   └── app.js          # 앱 초기화 및 라우팅
+└── README.md
+```
+
+## 🚀 실행 방법
+
+### 1. 저장소 클론
 ```bash
-# 가상환경 활성화
-conda activate env_fastapi
-
-# Streamlit 앱 실행
-streamlit run test_streamlit.py
+git clone https://github.com/yoondonggyu/KakaoTechBootcamp-Frontend.git
+cd KakaoTechBootcamp-Frontend
 ```
 
-또는 특정 포트로 실행:
+### 2. 로컬 서버 실행
 ```bash
-streamlit run test_streamlit.py --server.port 8501
+# Python 사용
+python -m http.server 3000
+
+# 또는 Node.js 사용
+npx serve -p 3000
 ```
 
-## 접속 주소
-
-브라우저에서 다음 주소로 접속:
+### 3. 브라우저에서 접속
 ```
-http://localhost:8501
+http://localhost:3000
 ```
 
-## 기능
+> ⚠️ **주의**: Backend API 서버(포트 8000)와 Model API 서버(포트 8001)가 실행 중이어야 합니다.
 
-### 1. 인증
-- 로그인
-- 회원가입
+## 📸 스크린샷
 
-### 2. 게시글
-- 게시글 목록 조회 (페이지네이션)
-- 게시글 작성
-- 게시글 상세 조회
+### 로그인 화면
+- 이메일/비밀번호 입력
+- 회원가입 링크
 
-### 3. 댓글
-- 댓글 목록 조회
-- 댓글 작성 (Model API 감성 분석 포함)
+### 게시글 목록
+- 게시글 카드 형태 표시
+- 작성자, 좋아요, 댓글 수 표시
 
-### 4. 이미지 업로드
-- 이미지 파일 업로드
-- Model API 이미지 분류 (강아지/고양이) 자동 실행
+### 게시글 상세
+- 이미지 표시
+- AI 이미지 분류 결과 (🐕 강아지 / 🐈 고양이)
+- AI 감정 분석 결과 (😊 긍정 / 😞 부정 / 😐 중립)
+- 댓글 작성/수정/삭제
 
-### 5. API 상태
-- Backend API 서버 상태 확인
-- API 엔드포인트 목록
+## 📄 API 연동
 
-## 필수 요구사항
+| 기능 | 엔드포인트 | 설명 |
+|------|-----------|------|
+| 로그인 | `POST /api/auth/login` | 사용자 로그인 |
+| 회원가입 | `POST /api/auth/signup` | 신규 회원 등록 |
+| 게시글 목록 | `GET /api/posts` | 게시글 목록 조회 |
+| 게시글 상세 | `GET /api/posts/{id}` | 게시글 상세 조회 |
+| 게시글 작성 | `POST /api/posts` | 새 게시글 작성 |
+| 이미지 업로드 | `POST /api/posts/upload` | 이미지 업로드 + AI 분류 |
+| 감정 분석 | `POST /api/sentiment/gemini` | Gemini 감정 분석 |
 
-1. **Backend API 서버 실행 중**
-   ```bash
-   cd FASTAPI_Project_back
-   uvicorn app.main:app --reload --port 8082
-   ```
+## 👨‍💻 개발자
 
-2. **Model API 서버 실행 중** (이미지 분류/감성 분석 사용 시)
-   ```bash
-   cd FASTAPI_Project_model
-   uvicorn app.main:app --reload --port 8001
-   ```
+- **윤동규** - [GitHub](https://github.com/yoondonggyu)
 
-3. **필요한 패키지**
-   ```bash
-   pip install streamlit requests pillow
-   ```
+## 📝 라이선스
 
-## Model API 연동
-
-이 Streamlit 앱은 Backend API를 통해 Model API와 연동됩니다:
-
-- **이미지 업로드**: 자동으로 이미지 분류 (강아지/고양이) 실행
-- **댓글 작성**: 자동으로 감성 분석 (긍정/부정) 실행
-
-결과는 응답에 포함되어 표시됩니다.
-
-
+This project is licensed under the MIT License.
