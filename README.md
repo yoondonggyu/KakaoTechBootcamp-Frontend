@@ -1,11 +1,23 @@
 # 🎉 동물 감정일기 - Frontend
 
-> 자유롭게 이야기를 나누는 커뮤니티 게시판의 프론트엔드
+> **바닐라 JavaScript**로 **FastAPI 모델 서빙 API**를 사용하는 커뮤니티 게시판
+
+[![JavaScript](https://img.shields.io/badge/Vanilla_JS-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
 ## 📋 프로젝트 소개
 
-**동물 감정일기**는 누구나 자유롭게 글을 작성하고 소통할 수 있는 커뮤니티 게시판입니다.  
-AI 기반 감정 분석과 이미지 분류 기능을 통해 더욱 풍부한 사용자 경험을 제공합니다.
+**동물 감정일기**는 **카카오테크 부트캠프** FastAPI 프로젝트의 프론트엔드입니다.
+
+### 🎯 핵심 목표: 바닐라 JS로 FastAPI 모델 서빙 사용
+
+이 프로젝트는 **프레임워크 없이 순수 JavaScript**만으로 FastAPI 기반 AI 모델 서빙 API를 호출하여:
+- 📸 **이미지 분류**: 업로드된 이미지에서 🐕 강아지 / 🐈 고양이 자동 분류
+- 💭 **감정 분석**: 게시글/댓글의 😊 긍정 / 😞 부정 / 😐 중립 감정 분석
+- 📝 **텍스트 요약**: 긴 게시글 내용 자동 요약
+
+을 웹 브라우저에서 직접 사용할 수 있는 풍부한 사용자 경험을 제공합니다.
 
 ## 🔗 관련 저장소
 
