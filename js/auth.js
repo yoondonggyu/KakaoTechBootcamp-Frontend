@@ -80,13 +80,18 @@ async function handleLogin(event) {
 // ========================================
 
 let signupProfileImageUrl = null;
+let isProfileUploading = false;
 
 async function handleProfileImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
 
+    // 업로드 시작 상태 설정
+    isProfileUploading = true;
+
     const preview = document.getElementById('signup-profile-preview');
     const placeholder = document.getElementById('signup-profile-placeholder');
+    const profileHelper = document.getElementById('signup-profile-helper');
 
     // 미리보기 표시
     const reader = new FileReader();
@@ -97,20 +102,38 @@ async function handleProfileImageUpload(event) {
     };
     reader.readAsDataURL(file);
 
+    // 사용자에게 업로드 중임을 알림
+    showToast('프로필 이미지를 업로드 중입니다...', 'info');
+
     // 서버에 업로드
     const result = await API.uploadProfileImage(file);
 
+    console.log('Profile upload result:', result);  // 디버깅용
+
+    // 업로드 종료 상태 설정
+    isProfileUploading = false;
+
     if (result.ok) {
         signupProfileImageUrl = result.data.data.profile_image_url;
+        // 에러 메시지 초기화
+        if (profileHelper) {
+            profileHelper.textContent = '';
+        }
         showToast('프로필 이미지 업로드 완료', 'success');
     } else {
-        showToast('프로필 이미지 업로드 실패', 'error');
+        showToast('프로필 이미지 업로드 실패. 다시 시도해주세요.', 'error');
         signupProfileImageUrl = null;
     }
 }
 
 async function handleSignup(event) {
     event.preventDefault();
+
+    // 이미지 업로드 중인지 확인
+    if (isProfileUploading) {
+        showToast('프로필 이미지가 아직 업로드 중입니다. 잠시만 기다려주세요.', 'error');
+        return;
+    }
 
     const email = document.getElementById('signup-email').value.trim();
     const password = document.getElementById('signup-password').value;
@@ -159,7 +182,7 @@ async function handleSignup(event) {
     }
 
     if (!signupProfileImageUrl) {
-        profileHelper.textContent = '프로필 사진을 추가해주세요';
+        profileHelper.textContent = '프로필 사진을 추가해주세요 (업로드 확인 필요)';
         hasError = true;
     }
 

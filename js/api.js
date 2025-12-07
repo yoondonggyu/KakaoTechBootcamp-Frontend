@@ -3,7 +3,8 @@
  * Backend API와의 통신을 담당합니다.
  */
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'http://172.20.4.42:8000/api';
+const MODEL_API_URL = 'http://172.20.4.42:8001/api';
 
 /**
  * API 요청 헬퍼 함수
@@ -229,7 +230,7 @@ async function deleteComment(postId, commentId) {
 // Model API (AI 분석)
 // ========================================
 
-const MODEL_API_URL = 'http://localhost:8001/api';
+
 
 /**
  * 감정 분석 API (기존 ML 모델 - 영어만 지원)
